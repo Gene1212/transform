@@ -61,7 +61,6 @@ void parse_file(char *filename,
   char line[256];
   clear_screen(s);
   int state = -1;
-  char *newlineRemover;
   char *currentValue;
   color clr;
   clr.red = DEFAULT_COLOR;
@@ -75,13 +74,9 @@ void parse_file(char *filename,
 
   while (fgets(line, 255, f) != NULL)
   {
-    //printf("%d\n",strlen(line));
-    newlineRemover = strchr(line,'\n');
-    if (newlineRemover != NULL){
-      *newlineRemover='\0';
-    }
+    //printf("%zu\n",strlen(line));
     line[strlen(line) - 1] = '\0';
-    //printf("%d\n", strlen(line));
+    //printf("%zu\n", strlen(line));
     printf(":%s\n", line);
     //printf(":%d\n", state);
 
@@ -187,7 +182,7 @@ void parse_file(char *filename,
     {
       clear_screen(s);
       draw_lines(edges, s, clr);
-      //display(s);
+      display(s);
     }
   }
 }
