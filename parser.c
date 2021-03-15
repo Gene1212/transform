@@ -33,7 +33,7 @@ The file follows the following format:
          rotate: create a rotation matrix,
                  then multiply the transform matrix by the rotation matrix -
                  takes 2 arguments (axis, theta) axis should be x y or z
-         apply: apply the current transformation matrix to the edge matrix
+         apply: apply the currentValue transformation matrix to the edge matrix
          display: clear the screen, then
                   draw the lines of the edge matrix to the screen
                   display the screen
@@ -61,7 +61,8 @@ void parse_file(char *filename,
   char line[256];
   clear_screen(s);
   int state = -1;
-  char *current;
+  char *newlineRemover;
+  char *currentValue;
   color clr;
   clr.red = DEFAULT_COLOR;
   clr.blue = DEFAULT_COLOR;
@@ -75,6 +76,10 @@ void parse_file(char *filename,
   while (fgets(line, 255, f) != NULL)
   {
     //printf("%d\n",strlen(line));
+    newlineRemover = strchr(line,'\n');
+    if (newlineRemover != NULL){
+      *newlineRemover='\0';
+    }
     line[strlen(line) - 1] = '\0';
     //printf("%d\n", strlen(line));
     printf(":%s\n", line);
@@ -82,23 +87,23 @@ void parse_file(char *filename,
 
     if (state == 0) //line
     {
-      current = line;
-      double x0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double y0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double z0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double x1 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double y1 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double z1 = (double)strtol(strsep(&current, " "), NULL, 10);
+      currentValue = line;
+      double x0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double y0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double z0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double x1 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double y1 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double z1 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
       //printf("%f %f %f %f %f %f\n",x0,y0,z0,x1,y1,z1);
       add_edge(edges, x0, y0, z0, x1, y1, z1);
       state = -1;
     }
     if (state == 1) //scale
     {
-      current = line;
-      double x0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double y0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double z0 = (double)strtol(strsep(&current, " "), NULL, 10);
+      currentValue = line;
+      double x0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double y0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double z0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
       //printf("%f %f %f\n",x0,y0,z0);
       struct matrix *m = new_matrix(4, 4);
       m = make_scale(x0, y0, z0);
@@ -107,10 +112,10 @@ void parse_file(char *filename,
     }
     if (state == 2) //move
     {
-      current = line;
-      double x0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double y0 = (double)strtol(strsep(&current, " "), NULL, 10);
-      double z0 = (double)strtol(strsep(&current, " "), NULL, 10);
+      currentValue = line;
+      double x0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double y0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
+      double z0 = (double)strtol(strsep(&currentValue, " "), NULL, 10);
       //printf("%f %f %f\n",x0,y0,z0);
       struct matrix *m = new_matrix(4, 4);
       m = make_translate(x0, y0, z0);
@@ -119,9 +124,9 @@ void parse_file(char *filename,
     }
     if (state == 3) //rotate
     {
-      current = line;
-      char *axis = strsep(&current, " ");
-      double theta = (double)strtol(strsep(&current, " "), NULL, 10);
+      currentValue = line;
+      char *axis = strsep(&currentValue, " ");
+      double theta = (double)strtol(strsep(&currentValue, " "), NULL, 10);
       struct matrix *m = new_matrix(4, 4);
       //printf("%s %f\n", axis, theta);
 
