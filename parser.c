@@ -74,8 +74,9 @@ void parse_file(char *filename,
 
   while (fgets(line, 255, f) != NULL)
   {
-    line[strlen(line) - 2] = '\0';
-    //printf(":%d\n", strlen(line));
+    //printf("%d\n",strlen(line));
+    line[strlen(line) - 1] = '\0';
+    //printf("%d\n", strlen(line));
     printf(":%s\n", line);
     //printf(":%d\n", state);
 
@@ -181,7 +182,7 @@ void parse_file(char *filename,
     {
       clear_screen(s);
       draw_lines(edges, s, clr);
-      display(s);
+      //display(s);
     }
   }
 }
